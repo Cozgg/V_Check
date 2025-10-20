@@ -1,37 +1,78 @@
-V_Check
-Đây là dự án phát hiện và cảnh báo thông tin sai lệch Tiếng Việt, được phát triển để tham gia cuộc thi Giải pháp phần mềm 2025 nhằm giải quyết Chủ đề 6. Giải pháp của chúng tôi tập trung vào việc xây dựng một tiện ích mở rộng cho trình duyệt, sử dụng AI để phân tích và cung cấp thông tin tham khảo về độ tin cậy của nội dung mà không kiểm duyệt hay gỡ bỏ.
-1. Giới thiệu tổng quan và Vấn đề
-1.1. Bối cảnh
-Trong thời đại số, thông tin sai lệch (misinformation/disinformation) lan truyền trên mạng xã hội và các nền tảng nội dung đang gây ra nhiều hệ lụy tiêu cực cho xã hội. Với khối lượng nội dung Tiếng Việt khổng lồ được tạo ra mỗi ngày, việc kiểm duyệt thủ công là không khả thi. Do đó, cần có một giải pháp tự động, nhanh chóng, và hiệu quả để hỗ trợ người dùng nhận diện thông tin chưa được kiểm chứng.
-1.2. Mục tiêu dự án
-Dự án hướng tới việc xây dựng một công cụ dưới dạng Browser Extension (tiện ích mở rộng trình duyệt). Công cụ này cho phép người dùng chủ động kiểm tra một đoạn văn bản bất kỳ, nhận được cảnh báo và thông tin tham khảo từ hệ thống AI.
-Giải pháp không kiểm duyệt hay gỡ bỏ nội dung, mà tập trung vào việc gắn nhãn và cung cấp cảnh báo, qua đó tôn trọng quyền tự do ngôn luận trong khi vẫn trang bị cho người dùng công cụ để đưa ra quyết định sáng suốt.
-2. Mô tả giải pháp và Tính năng
-Giải pháp được thiết kế theo kiến trúc 2 giai đoạn để đảm bảo tính khả thi và phát triển bền vững.
-2.1. Giai đoạn 1: Tích hợp Gemini API (MVP)
-Ở giai đoạn đầu, extension sẽ hoạt động như một "client" thông minh, gửi yêu cầu tới một mô hình ngôn ngữ lớn có sẵn.
-Người dùng bôi đen văn bản và nhấn nút kiểm tra trên extension.
-Extension gửi văn bản (đã được bọc trong một prompt kỹ thuật) đến Google Gemini API.
-Gemini API trả về kết quả phân tích và xác thực.
-Extension hiển thị kết quả này cho người dùng một cách trực quan.
-Dữ liệu (văn bản, kết quả, URL nguồn) được lưu trữ vào AWS S3 để phục vụ cho Giai đoạn 2.
-2.2. Giai đoạn 2: Huấn luyện mô hình tùy chỉnh
-Để tăng tốc độ, giảm chi phí và tăng cường độ chính xác cho văn bản Tiếng Việt, chúng tôi sẽ sử dụng dữ liệu thu thập được để huấn luyện mô hình riêng.
-Thu thập dữ liệu: Sử dụng BeautifulSoup để crawl và làm sạch dữ liệu từ các URL đã lưu. Bổ sung dữ liệu từ các nguồn mở uy tín như VFND.
-Fine-tuning: Sử dụng bộ dữ liệu Tiếng Việt đã được gán nhãn để fine-tune mô hình PhoBERT cho bài toán phân loại văn bản.
-Triển khai & Cập nhật: Extension sẽ được cập nhật để ưu tiên gọi mô hình PhoBERT đã được fine-tune.
-2.3. Các tính năng chính
-Quét và Phân tích: Cho phép người dùng bôi đen văn bản trên bất kỳ trang web nào để kiểm tra.
-Xác thực bằng AI: Sử dụng LLM để phân tích và đưa ra kết quả xác thực ban đầu.
-Gắn nhãn thông minh: Hiển thị kết quả (ví dụ: "Độ tin cậy cao", "Cần kiểm chứng", "Có khả năng sai lệch").
-Hệ thống học tăng cường: Tự động thu thập truy vấn và kết quả để xây dựng bộ dữ liệu.
-3. Cấu trúc thư mục
+
+#  V_Check — AI phát hiện & cảnh báo thông tin sai lệch tiếng Việt
+
+Một tiện ích mở rộng (browser extension) sử dụng AI để **phát hiện, gắn nhãn và cảnh báo thông tin sai lệch tiếng Việt**, hướng đến việc **tôn trọng quyền tự do ngôn luận** trong khi vẫn giúp người dùng đưa ra quyết định thông tin sáng suốt.
+
+ Dự án được phát triển trong khuôn khổ **Giải pháp phần mềm 2025 - Chủ đề 6**:  
+*“Nhiều người chia sẻ thông tin chưa được kiểm chứng về sức khỏe, chính trị, hay sản
+phẩm. Việc kiểm duyệt thủ công là bất khả thi do khối lượng nội dung quá lớn.
+Làm thế nào để phát hiện, gắn nhãn hoặc cảnh báo thông tin sai lệch bằng AI ngôn ngữ và xử lý văn bản tiếng Việt, mà vẫn đảm bảo tôn trọng quyền tự do ngôn luận?”*
+
+---
+
+##  Mục lục
+- [1. Giới thiệu tổng quan](#1-giới-thiệu-tổng-quan)
+  - [1.1. Bối cảnh](#11-bối-cảnh)
+  - [1.2. Mục tiêu dự án](#12-mục-tiêu-dự-án)
+- [2. Mô tả giải pháp và Tính năng](#2-mô-tả-giải-pháp-và-tính-năng)
+  - [2.1. Giai đoạn 1: MVP - Tích hợp Gemini API](#21-giai-đoạn-1-mvp---tích-hợp-gemini-api)
+  - [2.2. Giai đoạn 2: Huấn luyện mô hình tùy chỉnh](#22-giai-đoạn-2-huấn-luyện-mô-hình-tùy-chỉnh)
+  - [2.3. Tính năng chính](#23-tính-năng-chính)
+- [3. Cấu trúc thư mục](#3-cấu-trúc-thư-mục)
+- [4. Hướng dẫn cài đặt & sử dụng](#4-hướng-dẫn-cài-đặt--sử-dụng)
+- [5. Công nghệ & Thư viện](#5-công-nghệ--thư-viện)
+- [6. Dữ liệu tham khảo](#6-dữ-liệu-tham-khảo)
+- [7. Demo & Hướng phát triển](#7-demo--hướng-phát-triển)
+- [8. Giấy phép](#8-giấy-phép)
+
+---
+
+## 1. Giới thiệu tổng quan
+
+### 1.1. Bối cảnh  
+Trong thời đại số, thông tin sai lệch (misinformation/disinformation) lan truyền nhanh chóng trên mạng xã hội, gây ảnh hưởng tiêu cực đến xã hội.  
+Việc **kiểm duyệt thủ công là bất khả thi** do khối lượng nội dung tiếng Việt khổng lồ được tạo ra mỗi ngày.
+
+### 1.2. Mục tiêu dự án  
+Xây dựng **một công cụ dạng tiện ích mở rộng trình duyệt (browser extension)**, cho phép người dùng:
+- Chủ động kiểm tra độ tin cậy của một đoạn văn bản bất kỳ.
+- Nhận được **cảnh báo và gợi ý xác thực từ AI**.  
+Giải pháp **không kiểm duyệt hay gỡ bỏ nội dung**, mà **gắn nhãn và cung cấp cảnh báo**, đảm bảo **tự do ngôn luận** trong khi hỗ trợ người dùng **nhận diện thông tin sai lệch**.
+
+---
+
+## 2. Mô tả giải pháp và Tính năng
+
+Giải pháp được thiết kế gồm **2 giai đoạn** nhằm đảm bảo tính khả thi và mở rộng trong tương lai.
+
+### 2.1. Giai đoạn 1: MVP - Tích hợp Gemini API
+- Người dùng **bôi đen đoạn văn bản** và nhấn nút kiểm tra.
+- Extension gửi nội dung đến **Google Gemini API** thông qua backend Flask.
+- Gemini phân tích & trả về kết quả xác thực (mức độ tin cậy, cảnh báo, trích dẫn).
+- Kết quả hiển thị trực quan ngay trong giao diện extension.
+- **Dữ liệu (văn bản, kết quả, URL)** được lưu trữ trên **AWS S3** để phục vụ giai đoạn huấn luyện.
+
+### 2.2. Giai đoạn 2: Huấn luyện mô hình tùy chỉnh
+- **Thu thập dữ liệu**: Dùng BeautifulSoup để crawl, xác nhận đường dẫn và làm sạch các URL đã lưu;
+- **Fine-tuning**: Tinh chỉnh mô hình **PhoBERT** để phân loại mức độ tin cậy của văn bản tiếng Việt.
+- **Triển khai & cập nhật**: Extension được cập nhật để gọi mô hình PhoBERT trước, Gemini sau (nếu cần).
+
+### 2.3. Tính năng chính
+- **Phân tích thông minh**: Kiểm tra nội dung văn bản trực tiếp trên trang web.  
+- **AI Xác thực**: Sử dụng LLM (Gemini / PhoBERT) để phân tích và đánh giá độ tin cậy.  
+- **Gắn nhãn rõ ràng**: "Độ tin cậy cao" – "Cần kiểm chứng" – "Có khả năng sai lệch".  
+- **Học tăng cường**: Hệ thống lưu dữ liệu để cải thiện độ chính xác qua thời gian.
+
+---
+
+## 3. Cấu trúc thư mục
+
+```bash
 V_Check/
 ├── backend/
 │   ├── app.py
 │   ├── model.py
 │   ├── requirements.txt
-│   └── __init__.py
 ├── extension/
 │   ├── manifest.json
 │   ├── background.js
@@ -40,50 +81,94 @@ V_Check/
 │   ├── popup.css
 │   └── icons/
 └── README.md
+```
 
+## 4. Hướng dẫn cài đặt & sử dụng
 
-4. Hướng dẫn cài đặt và sử dụng
-4.1. Yêu cầu
-Trình duyệt (Chrome, Edge, Firefox)
-Python 3.9+
-Một file .env chứa GEMINI_API_KEY và thông tin AWS_ACCESS_KEY, AWS_SECRET_KEY.
-4.2. Cài đặt Extension
-Clone repository này:
-git clone [https://github.com/Cozgg/V_Check.git](https://github.com/Cozgg/V_Check.git)
+### Yêu cầu
+- Trình duyệt: Chrome/Edge/Firefox
+- Python 3.9+
+- Một file `.env` chứa các biến: `GEMINI_API_KEY`, `AWS_ACCESS_KEY_ID`, `AWS_SECRET_ACCESS_KEY`, `AWS_S3_BUCKET` (tùy chọn)
 
+### Cài đặt extension (dành cho dev)
+1. Clone repository:
 
-Mở trình duyệt Chrome/Edge và truy cập chrome://extensions.
-Bật "Chế độ nhà phát triển" (Developer mode).
-Chọn "Tải tiện ích đã giải nén" (Load unpacked) và trỏ đến thư mục extension.
-4.3. Cài đặt môi trường Backend
-Tạo và kích hoạt môi trường ảo:
+```bash
+git clone https://github.com/Cozgg/V_Check.git
+```
+
+2. Mở Chrome/Edge và truy cập `chrome://extensions`.
+3. Bật "Developer mode".
+4. Chọn "Load unpacked" và trỏ đến thư mục `extension/` trong repo.
+
+### Cài đặt Backend (local)
+Windows (PowerShell):
+
+```powershell
 python -m venv venv
-source venv/bin/activate  # Trên Windows: venv\Scripts\activate
+venv\Scripts\activate
+pip install -r backend/requirements.txt
+```
 
+Thiết lập file `.env` với các khóa cần thiết, sau đó chạy server API (ví dụ Flask):
 
-Cài đặt các thư viện cần thiết:
-pip install -r requirements.txt
+```powershell
+python backend/app.py
+```
 
+> Lưu ý: Ở Giai đoạn 1, bạn có thể cấu hình extension để gọi trực tiếp Gemini API từ frontend, nhưng cách an toàn hơn là gọi qua backend để bảo vệ API key và kiểm soát logging.
 
-5. Các thư viện và công nghệ
-Frontend (Extension): JavaScript, HTML, CSS
-AI Model (Giai đoạn 1): Google Gemini API
-AI Model (Giai đoạn 2): PhoBERT (PyTorch, Transformers)
-Data Scraping: Python, BeautifulSoup
-Lưu trữ dữ liệu: AWS S3
-6. Dữ liệu tham khảo
-Trong Giai đoạn 2, để huấn luyện và fine-tune mô hình PhoBERT, dự án sẽ tham khảo và sử dụng bộ dữ liệu VIETNAMESE FAKE NEWS DATASET - VFND.
-Dẫn nguồn (BibTex):
+---
+
+## 5. Công nghệ & Thư viện
+
+- Frontend (Extension): JavaScript, HTML, CSS
+- Backend: Python (Flask)
+- Giai đoạn 1 AI: Google Gemini API
+- Giai đoạn 2 AI: PhoBERT (PyTorch, Transformers)
+- Scraping & Xử lý dữ liệu: BeautifulSoup, requests
+- Lưu trữ: AWS S3
+
+---
+
+## 6. Dữ liệu tham khảo
+
+Trong Giai đoạn 2, để huấn luyện và fine-tune mô hình PhoBERT, dự án sẽ tham khảo bộ dữ liệu **VIETNAMESE FAKE NEWS DATASET (VFND)**.
+
+BibTeX:
+
+```bibtex
 @misc{ho_quang_thanh_2019_2578917,
-  author       = {Ho Quang Thanh and
-                  ninh-pm-se},
-  title        = {{thanhhocse96/vfnd-vietnamese-fake-news-datasets:
-                   Tập hợp các bài báo tiếng Việt và các bài post
-                   Facebook phân loại 2 nhãn Thật \& Giả (228 bài)}},
-  month        = feb,
-  year         = 2019,
-  doi          = {10.5281/zenodo.2578917},
-  url          = {[https://doi.org/10.5281/zenodo.2578917](https://doi.org/10.5281/zenodo.2578917)}
+  author = {Ho Quang Thanh and ninh-pm-se},
+  title = {{thanhhocse96/vfnd-vietnamese-fake-news-datasets: Tập hợp các bài báo tiếng Việt và các bài post Facebook phân loại 2 nhãn Thật \\& Giả (228 bài)}},
+  month = feb,
+  year = 2019,
+  doi = {10.5281/zenodo.2578917},
+  url = {https://doi.org/10.5281/zenodo.2578917}
 }
+```
 
+---
+
+## 7. Demo & Hướng phát triển
+
+- Tạo demo extension, quay video ngắn hướng dẫn (30–60s) thao tác bôi đen và nhận kết quả.  
+- Tích hợp explainability để giải thích tại sao AI đánh giá một nội dung là "Cần kiểm chứng".
+
+---
+
+## 8. Giấy phép
+
+Dự án này được phát hành dưới giấy phép **MIT**.
+
+---
+
+### Liên hệ tác giả
+
+- Nhóm tham dự cuộc thi: NGU (Never Give Up)
+- Gmail : nguyenhuucong295@gmail.com
+- Thành viên trong nhóm: Xem thêm trong [contributors](https://github.com/Cozgg/V_Check/graphs/contributors)
+- Repository: https://github.com/Cozgg/V_Check
+
+---
 
