@@ -45,7 +45,7 @@ Giải pháp **không kiểm duyệt hay gỡ bỏ nội dung**, mà **gắn nh�
 
 Giải pháp được thiết kế gồm **2 giai đoạn** nhằm đảm bảo tính khả thi và mở rộng trong tương lai.
 
-### 2.1. Giai đoạn 1: MVP - Tích hợp Gemini API
+### 2.1. Giai đoạn 1: Tích hợp Gemini API
 - Người dùng **bôi đen đoạn văn bản** và nhấn nút kiểm tra.
 - Extension gửi nội dung đến **Google Gemini API** thông qua backend Flask.
 - Gemini phân tích & trả về kết quả xác thực (mức độ tin cậy, cảnh báo, trích dẫn).
