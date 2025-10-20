@@ -4,7 +4,7 @@
 1. Giới thiệu tổng quan và Vấn đề
 1.1. Bối cảnh
 Trong thời đại số, thông tin sai lệch (misinformation/disinformation) lan truyền trên mạng xã hội và các nền tảng nội dung đang gây ra nhiều hệ lụy tiêu cực cho xã hội. Với khối lượng nội dung Tiếng Việt khổng lồ được tạo ra mỗi ngày, việc kiểm duyệt thủ công là không khả thi. Do đó, cần có một giải pháp tự động, nhanh chóng, và hiệu quả để hỗ trợ người dùng nhận diện thông tin chưa được kiểm chứng.
-1.2. Mục tiêu dự án
+1.2. Mục tiêu dự án /n
 Dự án hướng tới việc xây dựng một công cụ dưới dạng Browser Extension (tiện ích mở rộng trình duyệt). Công cụ này cho phép người dùng chủ động kiểm tra một đoạn văn bản bất kỳ, nhận được cảnh báo và thông tin tham khảo từ hệ thống AI.
 Giải pháp không kiểm duyệt hay gỡ bỏ nội dung, mà tập trung vào việc gắn nhãn và cung cấp cảnh báo, qua đó tôn trọng quyền tự do ngôn luận trong khi vẫn trang bị cho người dùng công cụ để đưa ra quyết định sáng suốt.
 2. Mô tả giải pháp và Tính năng
