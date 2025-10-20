@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Fact Checker</title>
+  <meta charset="UTF-8">
+  <link rel="stylesheet" type="text/css" href="popup.css">
+</head>
+<body>
+  <div class="container">
+    <div id="home-state">
+        <h2 class="header">🤔 Làm thế nào?</h2>
+        <ol class="instructions">
+            <li><span>1</span> Bôi đen một đoạn văn bản bất kỳ.</li>
+            <li><span>2</span> Nhấp chuột phải vào đoạn văn bản đó.</li>
+            <li><span>3</span> Chọn "Fact Check đoạn văn này".</li>
+        </ol>
+        <p class="footer-note">Kết quả sẽ hiển thị ở đây sau khi bạn nhấp vào biểu tượng extension.</p>
+    </div>
+
+    <div id="loading-state" style="display: none;">
+      <div class="spinner"></div>
+      <p>Đang tải kết quả...</p>
+    </div>
+
+    <div id="result-state" style="display: none;">
+      <h2 class="header">Đánh giá đoạn văn</h2>
+      <div class="score-circle" id="score-circle">
+        <span id="score-value">N/A</span>
+      </div>
+      <div id="summary">
+        <h3>Tóm tắt</h3>
+        <p id="summary-text">Chưa có dữ liệu.</p>
+      </div>
+    </div>
+  </div>
+  <script src="popup.js"></script>
+</body>
+</html>

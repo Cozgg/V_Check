@@ -1,0 +1,84 @@
+/* Lớp phủ toàn màn hình */
+#fact-check-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: rgba(0, 0, 0, 0.5);
+    /* Nền đen mờ */
+    z-index: 2147483646;
+    /* Luôn nổi trên cùng */
+    display: none;
+    /* Mặc định ẩn */
+    justify-content: center;
+    align-items: center;
+    font-family: Arial, sans-serif;
+}
+
+/* Lớp để hiển thị overlay */
+#fact-check-overlay.show {
+    display: flex;
+}
+
+/* Khung pop-up chính */
+#fact-check-popup {
+    background-color: white;
+    width: 450px;
+    max-width: 90%;
+    padding: 25px 30px;
+    border-radius: 12px;
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.2);
+    text-align: center;
+    position: relative;
+}
+
+/* Nút đóng (X) */
+#fact-check-close {
+    position: absolute;
+    top: 10px;
+    right: 15px;
+    font-size: 24px;
+    color: #aaa;
+    cursor: pointer;
+    border: none;
+    background: none;
+}
+
+#fact-check-close:hover {
+    color: #333;
+}
+
+/* Icon loading (hình mặt emoji) */
+#fact-check-popup .icon {
+    width: 60px;
+    /* <--- GIẢM SỐ NÀY */
+    height: 60px;
+    /* <--- VÀ SỐ NÀY */
+    margin-bottom: 15px;
+}
+
+/* Tiêu đề "Pino is fact checking..." */
+#fact-check-popup h3 {
+    font-size: 18px;
+    color: #333;
+    margin: 0 0 20px 0;
+}
+
+/* Khu vực hiển thị văn bản được kiểm tra */
+#fact-check-text {
+    background-color: #f7f7f7;
+    border-left: 4px solid #ddd;
+    padding: 15px;
+    margin: 0;
+    font-style: italic;
+    color: #555;
+    max-height: 150px;
+    overflow-y: auto;
+    text-align: left;
+}
+
+/* CSS cho màn hình kết quả (sẽ thêm sau) */
+#fact-check-result-view {
+    display: none;
+}
