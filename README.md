@@ -85,47 +85,12 @@ V_Check/
 
 ## 4. Hướng dẫn cài đặt & sử dụng
 
-### Yêu cầu
-- Trình duyệt: Chrome/Edge/Firefox
-- Python 3.9+
-- Một file `.env` chứa các biến: `GEMINI_API_KEY`, `AWS_ACCESS_KEY_ID`, `AWS_SECRET_ACCESS_KEY`, `AWS_S3_BUCKET` (tùy chọn)
-
-### Cài đặt extension (dành cho dev)
-1. Clone repository:
-
-```bash
-git clone https://github.com/Cozgg/V_Check.git
-```
-
-2. Mở Chrome/Edge và truy cập `chrome://extensions`.
-3. Bật "Developer mode".
-4. Chọn "Load unpacked" và trỏ đến thư mục `extension/` trong repo.
-
-### Cài đặt Backend (local)
-Windows (PowerShell):
-
-```powershell
-python -m venv venv
-venv\Scripts\activate
-pip install -r backend/requirements.txt
-```
-
-Thiết lập file `.env` với các khóa cần thiết, sau đó chạy server API (ví dụ Flask):
-
-```powershell
-python backend/app.py
-```
-
-> Lưu ý: Ở Giai đoạn 1, bạn có thể cấu hình extension để gọi trực tiếp Gemini API từ frontend, nhưng cách an toàn hơn là gọi qua backend để bảo vệ API key và kiểm soát logging.
-
----
-
 ## 5. Công nghệ & Thư viện
 
 - Frontend (Extension): JavaScript, HTML, CSS
 - Backend: Python (Flask)
 - Giai đoạn 1 AI: Google Gemini API
-- Giai đoạn 2 AI: PhoBERT (PyTorch, Transformers)
+- Giai đoạn 2 AI: PhoBERT (PyTorch)
 - Scraping & Xử lý dữ liệu: BeautifulSoup, requests
 - Lưu trữ: AWS S3
 
