@@ -27,32 +27,45 @@ chrome.contextMenus.onClicked.addListener((info, tab) => {
 
 // Hàm gọi API phân tích và gửi kết quả về lại content script
 async function callFactCheckingAPI(text, tabId) {
+
+  // Địa chỉ API Flask của bạn
+  const API_URL = "http://127.0.0.1:5000/api/check";
+
   try {
-    // Giả lập thời gian chờ 2 giây của API
-    await new Promise(resolve => setTimeout(resolve, 2000));
-
-    // Dữ liệu giả trả về
-    const mockApiResponse = {
-      score: Math.floor(Math.random() * 100),
-      summary: "Đây là bản tóm tắt phân tích được tạo tự động. Nội dung có vẻ đáng tin cậy nhưng cần kiểm tra chéo các nguồn thông tin."
-    };
-
-    // Bước 3: Gửi thông điệp chứa KẾT QUẢ về cho content script
-    // (Chúng ta sẽ hoàn thiện phần nhận kết quả này ở bước tiếp theo)
-    /* chrome.tabs.sendMessage(tabId, {
-        action: "showResult",
-        data: mockApiResponse
+    const response = await fetch(API_URL, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ text: text }), // Gửi văn bản trong body
     });
-    */
+
+    if (!response.ok) {
+      throw new Error(`Lỗi HTTP: ${response.status}`);
+    }
+
+    const resultData = await response.json();
+
+    // 3. LƯU KẾT QUẢ VÀO STORAGE
+    // tệp popup.js của bạn sẽ tự động đọc từ đây
+    chrome.storage.local.set({ analysisResult: resultData }, () => {
+      console.log("Đã lưu kết quả phân tích vào storage.");
+    });
+
+    // 4. (Tùy chọn) Gửi tin nhắn cho content.js để ẩn loading
+    // Hiện tại, popup.js của bạn đang xử lý việc này khi mở popup
+    // Nhưng nếu bạn muốn ẩn loading overlay ngay lập tức, bạn có thể thêm:
+    // chrome.tabs.sendMessage(tabId, { action: "hideLoadingPopup" });
+    // (Bạn sẽ cần thêm code xử lý "hideLoadingPopup" trong content.js)
 
   } catch (error) {
-    console.error("Lỗi API:", error);
-    // Gửi thông điệp báo lỗi về cho content script (nếu cần)
-    /*
-    chrome.tabs.sendMessage(tabId, {
-        action: "showError",
-        error: "Không thể phân tích."
-    });
-    */
+    console.error("Lỗi khi gọi API Flask:", error);
+
+    // Nếu lỗi, lưu thông báo lỗi vào storage để popup.js hiển thị
+    const errorResult = {
+        score: "?", // Hiển thị dấu "?" thay vì điểm số
+        summary: "Không thể kết nối đến máy chủ phân tích. Vui lòng đảm bảo backend (Flask) đang chạy và thử lại."
+    };
+    chrome.storage.local.set({ analysisResult: errorResult });
   }
 }
