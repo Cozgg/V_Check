@@ -2,8 +2,8 @@
 chrome.runtime.onInstalled.addListener(() => {
   chrome.contextMenus.create({
     id: "factCheckSelection",
-    title: "Fact Check với Pino Clone", // Dòng chữ hiển thị khi chuột phải
-    contexts: ["selection"] // Chỉ hiện ra khi người dùng bôi đen văn bản
+    title: "Check with V_Check🤔",
+    contexts: ["selection"]
   });
 });
 
@@ -12,6 +12,7 @@ chrome.contextMenus.onClicked.addListener((info, tab) => {
   if (info.menuItemId === "factCheckSelection" && info.selectionText) {
     if (tab && tab.id) {
       try {
+        // Gửi tin nhắn để HIỂN THỊ POPUP LOADING
         chrome.tabs.sendMessage(tab.id, {
           action: "showLoadingPopup",
           text: info.selectionText
@@ -20,6 +21,7 @@ chrome.contextMenus.onClicked.addListener((info, tab) => {
         console.warn("Không thể gửi tin nhắn đến content script. Có thể trang chưa sẵn sàng hoặc cần được tải lại.");
         console.warn(e);
       }
+      // Bắt đầu gọi API
       callFactCheckingAPI(info.selectionText, tab.id);
     }
   }
@@ -28,31 +30,37 @@ chrome.contextMenus.onClicked.addListener((info, tab) => {
 // Hàm gọi API phân tích và gửi kết quả về lại content script
 async function callFactCheckingAPI(text, tabId) {
   try {
-    // Giả lập thời gian chờ 2 giây của API
-    await new Promise(resolve => setTimeout(resolve, 2000));
+    // Giả lập thời gian chờ 3 giây của API
+    await new Promise(resolve => setTimeout(resolve, 3000));
 
-    // Dữ liệu giả trả về
+    // Dữ liệu giả trả về (ĐÃ THÊM "source")
     const mockApiResponse = {
-      score: Math.floor(Math.random() * 100),
-      summary: "Đây là bản tóm tắt phân tích được tạo tự động. Nội dung có vẻ đáng tin cậy nhưng cần kiểm tra chéo các nguồn thông tin."
+      score: Math.floor(Math.random() * 100), // Điểm ngẫu nhiên
+      summary: "Đây là bản tóm tắt phân tích được tạo tự động. Nội dung có vẻ đáng tin cậy nhưng cần kiểm tra chéo các nguồn thông tin để có kết quả chính xác nhất.",
+      source: "https://www.nguon-kiem-chung-gia-lap.com/bai-viet-abc-xyz" // Thêm nguồn
     };
 
-    // Bước 3: Gửi thông điệp chứa KẾT QUẢ về cho content script
-    // (Chúng ta sẽ hoàn thiện phần nhận kết quả này ở bước tiếp theo)
-    /* chrome.tabs.sendMessage(tabId, {
+    // Gửi thông điệp chứa KẾT QUẢ về cho content script
+    try {
+      chrome.tabs.sendMessage(tabId, {
         action: "showResult",
         data: mockApiResponse
-    });
-    */
+      });
+    } catch (e) {
+      console.warn("Không thể gửi kết quả đến content script (có thể tab đã bị đóng):", e);
+    }
+
 
   } catch (error) {
     console.error("Lỗi API:", error);
     // Gửi thông điệp báo lỗi về cho content script (nếu cần)
-    /*
-    chrome.tabs.sendMessage(tabId, {
-        action: "showError",
+    try {
+      chrome.tabs.sendMessage(tabId, {
+        action: "showError", // Cần thêm logic xử lý lỗi này trong content.js nếu muốn
         error: "Không thể phân tích."
-    });
-    */
+      });
+    } catch (e) {
+      // Bỏ qua nếu tab đã đóng
+    }
   }
 }

@@ -6,19 +6,18 @@
     width: 100vw;
     height: 100vh;
     background-color: rgba(0, 0, 0, 0.5);
-    /* Nền đen mờ */
     z-index: 2147483646;
-    /* Luôn nổi trên cùng */
     display: none;
-    /* Mặc định ẩn */
     justify-content: center;
     align-items: center;
     font-family: Arial, sans-serif;
+    opacity: 0;
+    transition: opacity 0.3s ease;
 }
 
-/* Lớp để hiển thị overlay */
 #fact-check-overlay.show {
     display: flex;
+    opacity: 1;
 }
 
 /* Khung pop-up chính */
@@ -29,8 +28,13 @@
     padding: 25px 30px;
     border-radius: 12px;
     box-shadow: 0 5px 20px rgba(0, 0, 0, 0.2);
-    text-align: center;
     position: relative;
+    transform: scale(0.95);
+    transition: transform 0.3s ease;
+}
+
+#fact-check-overlay.show #fact-check-popup {
+    transform: scale(1);
 }
 
 /* Nút đóng (X) */
@@ -49,24 +53,95 @@
     color: #333;
 }
 
-/* Icon loading (hình mặt emoji) */
-#fact-check-popup .icon {
-    width: 60px;
-    /* <--- GIẢM SỐ NÀY */
-    height: 60px;
-    /* <--- VÀ SỐ NÀY */
-    margin-bottom: 15px;
+/* --- CSS cho View Loading (Icon Động + Chữ + Dấu chấm động) --- */
+
+#fact-check-loading-view {
+    text-align: center;
 }
 
-/* Tiêu đề "Pino is fact checking..." */
-#fact-check-popup h3 {
+/* (YÊU CẦU MỚI) Chỉ hiệu ứng LÊN XUỐNG */
+@keyframes thinkFloat {
+    0% {
+        transform: translateY(0);
+    }
+
+    50% {
+        transform: translateY(-5px);
+    }
+
+    /* Đi Lên */
+    100% {
+        transform: translateY(0);
+    }
+
+    /* Đi Xuống */
+}
+
+
+/* Icon loading (ĐÃ ĐƠN GIẢN HÓA) */
+#fact-check-loading-view .icon {
+    width: 60px;
+    height: 60px;
+    margin-bottom: 15px;
+
+    /* (Đã xóa transform-origin) */
+
+    /* Áp dụng 1 animation duy nhất (chỉ lên xuống) */
+    animation: thinkFloat 2s ease-in-out infinite;
+}
+
+
+/* Định nghĩa hiệu ứng nhấp nháy cho dấu chấm */
+@keyframes ellipsisBlink {
+    0% {
+        opacity: .2;
+    }
+
+    20% {
+        opacity: 1;
+    }
+
+    100% {
+        opacity: .2;
+    }
+}
+
+/* CSS cho 3 dấu chấm */
+.ellipsis-container {
+    display: inline-block;
+    margin-left: 2px;
+}
+
+.ellipsis-container span {
+    animation-name: ellipsisBlink;
+    animation-duration: 1.4s;
+    animation-iteration-count: infinite;
+    animation-fill-mode: both;
+    font-size: 24px;
+    line-height: 1;
+}
+
+.ellipsis-container span:nth-child(2) {
+    animation-delay: .2s;
+}
+
+.ellipsis-container span:nth-child(3) {
+    animation-delay: .4s;
+}
+
+
+/* Tiêu đề "Đang kiểm tra sự thật..." */
+#fact-check-loading-view h3 {
     font-size: 18px;
     color: #333;
     margin: 0 0 20px 0;
+    display: flex;
+    justify-content: center;
+    align-items: baseline;
 }
 
-/* Khu vực hiển thị văn bản được kiểm tra */
-#fact-check-text {
+/* Khu vực hiển thị văn bản */
+#fact-check-text-loading {
     background-color: #f7f7f7;
     border-left: 4px solid #ddd;
     padding: 15px;
@@ -78,7 +153,72 @@
     text-align: left;
 }
 
-/* CSS cho màn hình kết quả (sẽ thêm sau) */
+/* --- CSS cho View Result (Nhãn - Tóm tắt - Nguồn) --- */
+
+/* Mặc định ẩn view kết quả */
 #fact-check-result-view {
     display: none;
+    text-align: center;
+}
+
+/* 1. Vùng Nhãn */
+#fact-check-label-container {
+    margin-bottom: 25px;
+    text-align: center;
+}
+
+.label {
+    display: inline-block;
+    padding: 8px 20px;
+    border-radius: 20px;
+    font-size: 16px;
+    font-weight: bold;
+    color: white;
+    text-transform: uppercase;
+}
+
+.label.green {
+    background-color: #28a745;
+}
+
+.label.red {
+    background-color: #dc3545;
+}
+
+.label.orange {
+    background-color: #ffc107;
+    color: #333;
+}
+
+/* 2 & 3. Vùng Tóm tắt & Nguồn */
+.result-section {
+    margin-top: 20px;
+    text-align: left;
+    border-top: 1px solid #eee;
+    padding-top: 15px;
+}
+
+.result-title {
+    margin: 0 0 10px 0;
+    font-size: 16px;
+    color: #333;
+    font-weight: bold;
+}
+
+#fact-check-summary {
+    font-size: 14px;
+    color: #555;
+    line-height: 1.5;
+    margin: 0;
+}
+
+#fact-check-source {
+    font-size: 14px;
+    color: #007bff;
+    text-decoration: none;
+    word-break: break-all;
+}
+
+#fact-check-source:hover {
+    text-decoration: underline;
 }

@@ -1,6 +1,6 @@
 {
     "manifest_version": 3,
-    "name": "Fact Checker Clone",
+    "name": "V_Check",
     "version": "1.0",
     "description": "Phân tích độ tin cậy của trang web.",
     "permissions": [
