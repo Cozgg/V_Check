@@ -5,6 +5,8 @@ from flask import Flask, request, jsonify
 from flask_cors import CORS
 from dotenv import load_dotenv
 
+from backend import api_key, db
+
 # Tải API key từ tệp .env
 load_dotenv()
 
@@ -13,13 +15,9 @@ app = Flask(__name__)
 # Cho phép extension (từ origin khác) gọi API này
 CORS(app)
 
-# --- Cấu hình Gemini API ---
-api_key = os.getenv("GEMINI_API_KEY")
-if not api_key:
-    raise ValueError("Không tìm thấy GEMINI_API_KEY. Vui lòng tạo tệp .env.")
 
 genai.configure(api_key=api_key)
-model = genai.GenerativeModel('gemini-2.5-flash')  # Bạn có thể đổi sang 'gemini-pro' nếu muốn
+model = genai.GenerativeModel('gemini-2.5-flash')
 
 # --- ĐỊNH NGHĨA PROMPT CHO GEMINI ---
 # Đây là "trái tim" của Giai đoạn 1.
@@ -97,6 +95,14 @@ def check_fact_api():
         print(f"Lỗi máy chủ nội bộ: {e}")
         return jsonify({"error": f"Lỗi máy chủ nội bộ: {str(e)}"}), 500
 
+@app.route('/api/init_db', methods=['GET'])
+def init_db():
+    try:
+        with app.app_context():
+            db.create_all()
+        return "Database tables created successfully!", 200
+    except Exception as e:
+        return f"Error creating database: {str(e)}", 500
 
 if __name__ == '__main__':
     # Chạy máy chủ Flask trên cổng 5000
