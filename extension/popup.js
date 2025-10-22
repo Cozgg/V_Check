@@ -29,18 +29,28 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 
     function updateUI(data) {
-        scoreValue.textContent = `${data.score}%`;
         summaryText.textContent = data.summary;
+        labelText.textContent = data.label; // Hiển thị nhãn
 
-        let color = '#ccc';
-        if (data.score >= 75) {
-            color = '#28a745';
-        } else if (data.score >= 50) {
-            color = '#ffc107';
-        } else {
-            color = '#dc3545';
+        let labelClass = 'orange'; // Mặc định
+
+        // Logic chọn màu giống hệt content.js
+        switch (data.label) {
+            case "Đúng sự thật":
+                labelClass = "green";
+                break;
+            case "Sai sự thật":
+            case "Gây hiểu lầm":
+            case "Lỗi Kết Nối":
+            case "Lỗi AI":
+                labelClass = "red";
+                break;
+            default: // "Thiếu ngữ cảnh", "Ý kiến cá nhân", v.v.
+                labelClass = "orange";
+                break;
         }
-        scoreCircle.style.borderColor = color;
-        scoreCircle.style.backgroundColor = color;
+
+        // Xóa class màu cũ và thêm class màu mới
+        labelText.className = 'label ' + labelClass;
     }
 });

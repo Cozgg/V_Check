@@ -84,19 +84,31 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
   if (request.action === "showResult") {
     const data = request.data;
 
-    // 1. Cập nhật Nhãn
-    let labelText = "Đang xác thực";
-    let labelClass = "orange"; // Màu cam
+    let labelText = data.label; // Lấy nhãn trực tiếp
+    let labelClass = "orange"; // Mặc định là màu cam
 
-    if (data.score >= 75) {
-      labelText = "Đúng sự thật";
-      labelClass = "green"; // Màu xanh
-    } else if (data.score < 40) {
-      labelText = "Không đúng sự thật";
-      labelClass = "red"; // Màu đỏ
+    // Dựa vào nhãn để chọn màu
+    switch (labelText) {
+        case "Đúng sự thật":
+            labelClass = "green"; // Xanh
+            break;
+        case "Sai sự thật":
+        case "Gây hiểu lầm":
+        case "Lỗi Kết Nối": // Nhãn lỗi cũng màu đỏ
+        case "Lỗi AI":
+            labelClass = "red"; // Đỏ
+            break;
+        case "Thiếu ngữ cảnh":
+        case "Ý kiến cá nhân":
+        case "Châm biếm/Hài hước":
+        case "Không thể kiểm chứng":
+        default:
+            labelClass = "orange"; // Cam
+            break;
     }
-    labelContainer.innerHTML = `<span class="label ${labelClass}">${labelText}</span>`;
 
+    // 1. Cập nhật Nhãn
+    labelContainer.innerHTML = `<span class="label ${labelClass}">${labelText}</span>`;
     // 2. Cập nhật Tóm tắt
     summaryElement.textContent = data.summary;
 

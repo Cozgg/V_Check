@@ -27,36 +27,41 @@ chrome.contextMenus.onClicked.addListener((info, tab) => {
   }
 });
 
-// Hàm gọi API phân tích và gửi kết quả về lại content script
 async function callFactCheckingAPI(text, tabId) {
+  const API_URL = "http://127.0.0.1:5000/api/check";
   try {
-    // Giả lập thời gian chờ 3 giây của API
-    await new Promise(resolve => setTimeout(resolve, 3000));
+    const response = await fetch(API_URL, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      // Gửi văn bản mà người dùng đã bôi đen
+      body: JSON.stringify({ text: text })
+    });
 
-    // Dữ liệu giả trả về (ĐÃ THÊM "source")
-    const mockApiResponse = {
-      score: Math.floor(Math.random() * 100), // Điểm ngẫu nhiên
-      summary: "Đây là bản tóm tắt phân tích được tạo tự động. Nội dung có vẻ đáng tin cậy nhưng cần kiểm tra chéo các nguồn thông tin để có kết quả chính xác nhất.",
-      source: "https://www.nguon-kiem-chung-gia-lap.com/bai-viet-abc-xyz" // Thêm nguồn
-    };
+    if (!response.ok) {
+      // Nếu máy chủ Flask trả về lỗi (ví dụ: 500)
+      throw new Error(`Lỗi HTTP: ${response.status}`);
+    }
 
+    const resultData = await response.json();
+    console.log("ĐÃ NHẬN KẾT QUẢ TỪ FLASK:", resultData); // Dòng kiểm tra
     // Gửi thông điệp chứa KẾT QUẢ về cho content script
     try {
       chrome.tabs.sendMessage(tabId, {
         action: "showResult",
-        data: mockApiResponse
+        data: resultData
       });
     } catch (e) {
       console.warn("Không thể gửi kết quả đến content script (có thể tab đã bị đóng):", e);
     }
-
 
   } catch (error) {
     console.error("Lỗi API:", error);
     // Gửi thông điệp báo lỗi về cho content script (nếu cần)
     try {
       chrome.tabs.sendMessage(tabId, {
-        action: "showError", // Cần thêm logic xử lý lỗi này trong content.js nếu muốn
+        action: "showError",
         error: "Không thể phân tích."
       });
     } catch (e) {
