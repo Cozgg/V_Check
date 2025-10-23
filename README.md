@@ -84,7 +84,29 @@ V_Check/
 ```
 
 ## 4. Hướng dẫn cài đặt & sử dụng
+Bước 1. Cài đặt Extension (Frontend)
 
+ 1. Tải hoặc clone thư mục extension/ về máy tính của bạn.
+ 
+ 2. Mở trình duyệt Google Chrome và truy cập vào trang: chrome://extensions/.
+ 
+ 3. Ở góc trên bên phải, bật Developer mode (Chế độ dành cho nhà phát triển).
+ 
+ 4. Nhấn vào nút Load unpacked (Tải tiện ích đã giải nén).
+ 
+ 5. Chọn toàn bộ thư mục extension/ mà bạn vừa tải về.
+
+Bước 2. Sử dụng
+ 1. Truy cập bất kỳ trang web nào.
+ 
+ 2. Bôi đen một đoạn văn bản (tiếng Việt) mà bạn muốn kiểm tra thông tin.
+ 
+ 3. Nhấn chuột phải vào đoạn văn bản đã bôi đen.
+ 
+ 4. Chọn "Check with V_Check🤔" từ menu ngữ cảnh.
+ 
+ 5. Một cửa sổ popup phân tích sẽ hiển thị ngay lập tức với kết quả từ AI.
+ 
 ## 5. Công nghệ & Thư viện
 
 - Frontend (Extension): JavaScript, HTML, CSS
@@ -116,8 +138,7 @@ BibTeX:
 ---
 
 ## 7. Demo & Hướng phát triển
-
-- Tạo demo extension, quay video ngắn hướng dẫn (30–60s) thao tác bôi đen và nhận kết quả.  
+- Hoàn thiện giai đoạn 2
 - Tích hợp explainability để giải thích tại sao AI đánh giá một nội dung là "Cần kiểm chứng".
 
 ---
@@ -131,6 +152,7 @@ Dự án này được phát hành dưới giấy phép **MIT**.
 ### Liên hệ tác giả
 
 - Nhóm tham dự cuộc thi: NGU (Never Give Up)
+- Thành viên: 2351010025 - Nguyễn Hữu Công, 2351010022 - Huỳnh Thế Cảnh, 2351010180 - Phạm Anh Quyền
 - Gmail : nguyenhuucong295@gmail.com
 - Thành viên trong nhóm: Xem thêm trong [contributors](https://github.com/Cozgg/V_Check/graphs/contributors)
 - Repository: https://github.com/Cozgg/V_Check
