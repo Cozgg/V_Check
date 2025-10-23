@@ -13,8 +13,6 @@ app = Flask(__name__)
 # Cho phép extension (từ origin khác) gọi API này
 CORS(app)
 
-# === BẮT ĐẦU THAY ĐỔI ===
-
 # 1. Chuyển cấu hình app từ __init__.py sang đây
 app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv('POSTGRES_URL')
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
@@ -22,18 +20,18 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 # 2. Import db VÀ api_key TỪ 'backend' SAU KHI tạo và cấu hình app
 from backend import api_key, db
 
-# 3. Khởi tạo db với app (đây là bước quan trọng nhất)
+# 3. Khởi tạo db với app
 db.init_app(app)
 
-# === KẾT THÚC THAY ĐỔI ===
+# 4. Import model SAU KHI db được khởi tạo
+#    Điều này là cần thiết để hàm init_db() hoạt động
+from backend.model import FactCheck
 
 genai.configure(api_key=api_key)
-model = genai.GenerativeModel('gemini-2.5-flash')
+# Đảm bảo bạn đang dùng model được hỗ trợ, ví dụ 'gemini-1.5-flash'
+model = genai.GenerativeModel('gemini-1.5-flash')
 
 # --- ĐỊNH NGHĨA PROMPT CHO GEMINI ---
-# Đây là "trái tim" của Giai đoạn 1.
-# Prompt này yêu cầu AI trả về ĐÚNG ĐỊNH DẠNG JSON
-# mà tệp popup.js của bạn đang mong đợi (score và summary)
 FACT_CHECK_PROMPT = """
 Bạn là một trợ lý AI chuyên nghiệp có nhiệm vụ xác thực thông tin.
 Văn bản cần kiểm tra: "{text_to_check}"
@@ -81,17 +79,13 @@ def check_fact_api():
         response = model.generate_content(prompt)
 
         # 3. Xử lý phản hồi từ Gemini
-        # Gemini có thể trả về text dạng ```json\n{...}\n```
-        # Chúng ta cần làm sạch nó
         cleaned_response_text = response.text.strip().replace("```json", "").replace("```", "").strip()
 
-        # Phân tích chuỗi JSON từ Gemini
         try:
             result_data = json.loads(cleaned_response_text)
 
-            # Đảm bảo có đủ 'label' và 'summary'
             if 'label' not in result_data or 'summary' not in result_data:
-                raise ValueError("Thiếu key 'score' hoặc 'summary'")
+                raise ValueError("Thiếu key 'label' hoặc 'summary'")
 
             # Gửi lại dưới dạng JSON chuẩn cho frontend
             return jsonify(result_data), 200
@@ -99,12 +93,11 @@ def check_fact_api():
         except (json.JSONDecodeError, ValueError) as e:
             print(f"Lỗi phân tích JSON từ Gemini: {e}")
             print(f"Dữ liệu gốc từ Gemini: {response.text}")
-            # Trả về lỗi nếu Gemini không trả về JSON đúng định dạng
-            return jsonify({"score": 0, "summary": "Lỗi xử lý phản hồi từ AI. Vui lòng thử lại."}), 500
+            return jsonify({"label": "Lỗi AI", "summary": "Lỗi xử lý phản hồi từ AI. Vui lòng thử lại."}), 500
 
     except Exception as e:
         print(f"Lỗi máy chủ nội bộ: {e}")
-        return jsonify({"error": f"Lỗi máy chủ nội bộ: {str(e)}"}), 500
+        return jsonify({"label": "Lỗi Kết Nối", "summary": f"Lỗi máy chủ nội bộ: {str(e)}"}), 500
 
 @app.route('/api/init_db', methods=['GET'])
 def init_db():
@@ -115,6 +108,6 @@ def init_db():
     except Exception as e:
         return f"Error creating database: {str(e)}", 500
 
+# Dòng này chỉ để chạy local, Vercel sẽ không dùng
 if __name__ == '__main__':
-    # Chạy máy chủ Flask trên cổng 5000
     app.run(debug=True, port=5000)
