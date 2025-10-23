@@ -3,10 +3,11 @@ document.addEventListener('DOMContentLoaded', function () {
     const loadingState = document.getElementById('loading-state');
     const resultState = document.getElementById('result-state');
 
-    const scoreValue = document.getElementById('score-value');
-    const scoreCircle = document.getElementById('score-circle');
+    const labelText = document.getElementById('label-text');
     const summaryText = document.getElementById('summary-text');
 
+    const sourceSection = document.getElementById('source-section');
+    const sourceElement = document.getElementById('fact-check-source');
     // Hiển thị màn hình tải ngay lập tức
     homeState.style.display = 'none';
     loadingState.style.display = 'block';
@@ -28,29 +29,49 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     });
 
+   // --- HÀM UPDATEUI ĐÃ CẬP NHẬT ĐẦY ĐỦ ---
     function updateUI(data) {
+        // 1. Cập nhật Tóm tắt
         summaryText.textContent = data.summary;
-        labelText.textContent = data.label; // Hiển thị nhãn
 
-        let labelClass = 'orange'; // Mặc định
+        // 2. Cập nhật Nhãn
+        labelText.textContent = data.label;
+        let labelClass = 'orange'; // Mặc định là màu cam
 
-        // Logic chọn màu giống hệt content.js
+        // Logic chọn màu (ĐÃ BAO GỒM TẤT CẢ 7 NHÃN + LỖI)
         switch (data.label) {
+            // Nhóm màu Xanh (Tin cậy)
             case "Đúng sự thật":
                 labelClass = "green";
                 break;
+
+            // Nhóm màu Đỏ (Cảnh báo)
             case "Sai sự thật":
             case "Gây hiểu lầm":
-            case "Lỗi Kết Nối":
+            case "Lỗi Kết Nối": // Nhãn lỗi
             case "Lỗi AI":
                 labelClass = "red";
                 break;
-            default: // "Thiếu ngữ cảnh", "Ý kiến cá nhân", v.v.
+
+            // Nhóm màu Cam (Cần chú ý / Trung tính)
+            case "Thiếu ngữ cảnh":
+            case "Ý kiến cá nhân":
+            case "Châm biếm/Hài hước":
+            case "Không thể kiểm chứng":
+            default:
                 labelClass = "orange";
                 break;
         }
 
-        // Xóa class màu cũ và thêm class màu mới
         labelText.className = 'label ' + labelClass;
+
+        // 3. Cập nhật Nguồn
+        if (data.source) { // Kiểm tra an toàn
+            sourceElement.textContent = data.source;
+            sourceElement.href = data.source;
+            sourceSection.style.display = 'block'; // Hiển thị vùng nguồn
+        } else {
+            sourceSection.style.display = 'none'; // Ẩn nếu không có nguồn
+        }
     }
 });
