@@ -1,4 +1,4 @@
-/* Lớp phủ toàn màn hình */
+
 #fact-check-overlay {
     position: fixed;
     top: 0;
@@ -20,7 +20,7 @@
     opacity: 1;
 }
 
-/* Khung pop-up chính */
+
 #fact-check-popup {
     background-color: white;
     width: 450px;
@@ -37,7 +37,7 @@
     transform: scale(1);
 }
 
-/* Nút đóng (X) */
+
 #fact-check-close {
     position: absolute;
     top: 10px;
@@ -50,41 +50,37 @@
 }
 #fact-check-close:hover { color: #333; }
 
-/* --- CSS cho View Loading (Icon Động + Chữ + Dấu chấm động) --- */
+
 
 #fact-check-loading-view {
     text-align: center;
 }
 
-/* (YÊU CẦU MỚI) Chỉ hiệu ứng LÊN XUỐNG */
 @keyframes thinkFloat {
     0%   { transform: translateY(0); }
-    50%  { transform: translateY(-5px); } /* Đi Lên */
-    100% { transform: translateY(0); }   /* Đi Xuống */
+    50%  { transform: translateY(-5px); }
+    100% { transform: translateY(0); }
 }
 
 
-/* Icon loading (ĐÃ ĐƠN GIẢN HÓA) */
+
 #fact-check-loading-view .icon {
     width: 60px;
     height: 60px;
     margin-bottom: 15px;
     
-    /* (Đã xóa transform-origin) */
-    
-    /* Áp dụng 1 animation duy nhất (chỉ lên xuống) */
+
+
     animation: thinkFloat 2s ease-in-out infinite;
 }
 
 
-/* Định nghĩa hiệu ứng nhấp nháy cho dấu chấm */
 @keyframes ellipsisBlink {
     0% { opacity: .2; }
     20% { opacity: 1; }
     100% { opacity: .2; }
 }
 
-/* CSS cho 3 dấu chấm */
 .ellipsis-container {
     display: inline-block;
     margin-left: 2px;
@@ -108,7 +104,6 @@
 }
 
 
-/* Tiêu đề "Đang kiểm tra sự thật..." */
 #fact-check-loading-view h3 {
     font-size: 18px;
     color: #333;
@@ -118,7 +113,6 @@
     align-items: baseline;
 }
 
-/* Khu vực hiển thị văn bản */
 #fact-check-text-loading {
     background-color: #f7f7f7;
     border-left: 4px solid #ddd;
@@ -131,15 +125,11 @@
     text-align: left;
 }
 
-/* --- CSS cho View Result (Nhãn - Tóm tắt - Nguồn) --- */
-
-/* Mặc định ẩn view kết quả */
 #fact-check-result-view {
     display: none;
     text-align: center;
 }
 
-/* 1. Vùng Nhãn */
 #fact-check-label-container {
     margin-bottom: 25px; 
     text-align: center;
@@ -162,7 +152,6 @@
     color: #333;
 }
 
-/* 2 & 3. Vùng Tóm tắt & Nguồn */
 .result-section {
     margin-top: 20px;
     text-align: left;

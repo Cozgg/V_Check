@@ -35,18 +35,15 @@ async function callFactCheckingAPI(text, tabId) {
       headers: {
         "Content-Type": "application/json",
       },
-      // Gửi văn bản mà người dùng đã bôi đen
       body: JSON.stringify({ text: text })
     });
 
     if (!response.ok) {
-      // Nếu máy chủ Flask trả về lỗi (ví dụ: 500)
       throw new Error(`Lỗi HTTP: ${response.status}`);
     }
 
     const resultData = await response.json();
     console.log("ĐÃ NHẬN KẾT QUẢ TỪ FLASK:", resultData); // Dòng kiểm tra
-    // Gửi thông điệp chứa KẾT QUẢ về cho content script
     try {
       chrome.tabs.sendMessage(tabId, {
         action: "showResult",
@@ -58,14 +55,12 @@ async function callFactCheckingAPI(text, tabId) {
 
   } catch (error) {
     console.error("Lỗi API:", error);
-    // Gửi thông điệp báo lỗi về cho content script (nếu cần)
     try {
       chrome.tabs.sendMessage(tabId, {
         action: "showError",
         error: "Không thể phân tích."
       });
     } catch (e) {
-      // Bỏ qua nếu tab đã đóng
     }
   }
 }

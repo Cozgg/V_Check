@@ -5,31 +5,24 @@ from flask import Flask, request, jsonify
 from flask_cors import CORS
 from dotenv import load_dotenv
 
-# Tải API key từ tệp .env
 load_dotenv()
 
-# --- Cấu hình Flask ---
 app = Flask(__name__)
-# Cho phép extension (từ origin khác) gọi API này
 CORS(app)
 
-# 1. Chuyển cấu hình app từ __init__.py sang đây
 app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv('POSTGRES_URL')
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
-# 2. Import db VÀ api_key TỪ 'backend' SAU KHI tạo và cấu hình app
 from backend import api_key, db
 
-# 3. Khởi tạo db với app
 db.init_app(app)
 
-# 4. Import model SAU KHI db được khởi tạo
+
 from backend.model import FactCheck
 
 genai.configure(api_key=api_key)
 model = genai.GenerativeModel('gemini-2.5-flash')
 
-# --- ĐỊNH NGHĨA PROMPT CHO GEMINI ---
 FACT_CHECK_PROMPT = """
 Bạn là một trợ lý AI chuyên nghiệp có nhiệm vụ xác thực thông tin.
 Văn bản cần kiểm tra: "{text_to_check}"
@@ -62,10 +55,7 @@ Hãy trả lời CHỈ BẰNG một đối tượng JSON hợp lệ với cấu 
 
 @app.route('/api/check', methods=['POST'])
 def check_fact_api():
-    """
-    Endpoint API để nhận văn bản từ extension,
-    gửi đến Gemini và trả kết quả về.
-    """
+
     try:
         data = request.get_json()
         if not data or 'text' not in data:
@@ -73,13 +63,13 @@ def check_fact_api():
 
         text_to_check = data['text']
 
-        # 1. Tạo prompt hoàn chỉnh
+        # Tạo prompt hoàn chỉnh
         prompt = FACT_CHECK_PROMPT.format(text_to_check=text_to_check)
 
-        # 2. Gọi API Gemini
+        # Gọi API Gemini
         response = model.generate_content(prompt)
 
-        # 3. Xử lý phản hồi từ Gemini
+        # Xử lý phản hồi từ Gemini
         cleaned_response_text = response.text.strip().replace("```json", "").replace("```", "").strip()
 
         try:
@@ -88,7 +78,6 @@ def check_fact_api():
             if 'label' not in result_data or 'summary' not in result_data or 'source' not in result_data:
                 raise ValueError("Thiếu key 'label', 'summary' hoặc 'source'")
 
-            # === BẮT ĐẦU MÃ LƯU VÀO DATABASE ===
             # Mã này được thêm vào để lưu kết quả vào DB
             try:
                 new_check = FactCheck(
@@ -101,10 +90,8 @@ def check_fact_api():
                 db.session.commit()
             except Exception as e:
                 print(f"Lỗi khi lưu vào DB: {e}")
-                db.session.rollback() # Quan trọng: Hủy bỏ nếu có lỗi
-            # === KẾT THÚC MÃ LƯU VÀO DATABASE ===
+                db.session.rollback()
 
-            # Gửi lại dưới dạng JSON chuẩn cho frontend
             return jsonify(result_data), 200
 
         except (json.JSONDecodeError, ValueError) as e:

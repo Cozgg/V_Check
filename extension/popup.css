@@ -1,4 +1,4 @@
-/* CSS cho màn hình hướng dẫn */
+
 #home-state {
   text-align: left;
   width: 100%;
@@ -7,7 +7,7 @@
 body {
   font-family: Arial, sans-serif;
   width: 300px;
-  /* <--- CHỈNH SỬA DÒNG NÀY */
+
   padding: 15px;
   text-align: center;
 }
@@ -64,7 +64,6 @@ body {
     font-size: 13px;
     color: #007bff;
     text-decoration: none;
-    /* Giúp link không bị tràn ra ngoài popup */
     word-break: break-all;
 }
 
