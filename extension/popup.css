@@ -46,3 +46,28 @@ body {
   border-top: 1px solid #eee;
   padding-top: 10px;
 }
+.result-section {
+    margin-top: 15px;
+    text-align: left;
+    border-top: 1px solid #eee;
+    padding-top: 10px;
+}
+
+.result-title {
+    margin: 0 0 8px 0;
+    font-size: 14px;
+    color: #333;
+    font-weight: bold;
+}
+
+#fact-check-source {
+    font-size: 13px;
+    color: #007bff;
+    text-decoration: none;
+    /* Giúp link không bị tràn ra ngoài popup */
+    word-break: break-all;
+}
+
+#fact-check-source:hover {
+    text-decoration: underline;
+}
