@@ -29,7 +29,7 @@ from backend.model import FactCheck
 
 genai.configure(api_key=api_key)
 # Đảm bảo bạn đang dùng model được hỗ trợ, ví dụ 'gemini-1.5-flash'
-model = genai.GenerativeModel('gemini-1.5-flash')
+model = genai.GenerativeModel('gemini-2.5-flash')
 
 # --- ĐỊNH NGHĨA PROMPT CHO GEMINI ---
 FACT_CHECK_PROMPT = """
