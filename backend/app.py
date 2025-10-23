@@ -36,22 +36,25 @@ Văn bản cần kiểm tra: "{text_to_check}"
 
 Hãy thực hiện các bước phân tích sau đây một cách âm thầm (không cần in ra):
 1.  Phân tích tuyên bố chính trong văn bản.
-2.  Tìm các nguồn uy tín (báo chí, học thuật) xác nhận hoặc bác bỏ tuyên bố này.
-3.  Đánh giá bối cảnh, mục đích (ví dụ: châm biếm, ý kiến) của văn bản.
+2.  Tìm các nguồn uy tín (báo chí chính thống, tạp chí học thuật, tổ chức chính phủ) để xác nhận hoặc bác bỏ tuyên bố này.
+3.  **Quan trọng: Tránh sử dụng Wikipedia** làm nguồn minh chứng chính vì đây là nguồn mở, có thể bị chỉnh sửa.
+4.  Đánh giá bối cảnh, mục đích của văn bản.
+5.  Tìm MỘT link URL minh chứng (từ các nguồn uy tín đã nêu, không phải Wikipedia) cho phân tích của bạn.
 
 Sau khi hoàn thành phân tích, hãy chọn MỘT nhãn phù hợp nhất từ danh sách sau:
-- "Đúng sự thật" (Nếu được xác nhận bởi nhiều nguồn uy tín)
-- "Sai sự thật" (Nếu bị bác bỏ bởi nhiều nguồn uy tín)
-- "Gây hiểu lầm" (Nếu thông tin đúng nhưng cách trình bày cố tình gây hiểu nhầm)
-- "Thiếu ngữ cảnh" (Nếu thông tin đúng nhưng thiếu bối cảnh quan trọng)
-- "Ý kiến cá nhân" (Nếu đây rõ ràng là quan điểm, không phải tuyên bố sự thật)
-- "Châm biếm/Hài hước" (Nếu mục đích của văn bản là để đùa)
-- "Không thể kiểm chứng" (Nếu không tìm thấy nguồn uy tín nào)
+- "Đúng sự thật"
+- "Sai sự thật"
+- "Gây hiểu lầm"
+- "Thiếu ngữ cảnh"
+- "Ý kiến cá nhân"
+- "Châm biếm/Hài hước"
+- "Không thể kiểm chứng"
 
 Hãy trả lời CHỈ BẰNG một đối tượng JSON hợp lệ với cấu trúc sau:
 {{
   "label": "<Nhãn bạn đã chọn từ danh sách trên>",
-  "summary": "<Bản tóm tắt (không quá 3 câu) giải thích cho lựa chọn nhãn của bạn>"
+  "summary": "<Bản tóm tắt (không quá 3 câu) giải thích cho lựa chọn nhãn của bạn>",
+  "source": "<link URL minh chứng, trả về chuỗi rỗng "" nếu không tìm thấy hoặc nếu nguồn duy nhất tìm được là Wikipedia>"
 }}
 """
 
@@ -82,8 +85,8 @@ def check_fact_api():
         try:
             result_data = json.loads(cleaned_response_text)
 
-            if 'label' not in result_data or 'summary' not in result_data:
-                raise ValueError("Thiếu key 'label' hoặc 'summary'")
+            if 'label' not in result_data or 'summary' not in result_data or 'source' not in result_data:
+                raise ValueError("Thiếu key 'label', 'summary' hoặc 'source'")
 
             # === BẮT ĐẦU MÃ LƯU VÀO DATABASE ===
             # Mã này được thêm vào để lưu kết quả vào DB
@@ -91,7 +94,8 @@ def check_fact_api():
                 new_check = FactCheck(
                     text_checked=text_to_check,
                     label=result_data['label'],
-                    summary=result_data['summary']
+                    summary=result_data['summary'],
+                    source=result_data['source']
                 )
                 db.session.add(new_check)
                 db.session.commit()
@@ -106,7 +110,7 @@ def check_fact_api():
         except (json.JSONDecodeError, ValueError) as e:
             print(f"Lỗi phân tích JSON từ Gemini: {e}")
             print(f"Dữ liệu gốc từ Gemini: {response.text}")
-            return jsonify({"label": "Lỗi AI", "summary": "Lỗi xử lý phản hồi từ AI. Vui lòng thử lại."}), 500
+            return jsonify({"label": "Lỗi AI", "summary": "Lỗi xử lý phản hồi từ AI.", "source": ""}), 500
 
     except Exception as e:
         print(f"Lỗi máy chủ nội bộ: {e}")
