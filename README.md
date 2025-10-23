@@ -52,12 +52,18 @@ Giải pháp được thiết kế gồm **2 giai đoạn** nhằm đảm bảo 
 - Kết quả hiển thị trực quan ngay trong giao diện extension.
 - **Dữ liệu (văn bản, kết quả, URL)** được lưu trữ trên **AWS S3** để phục vụ giai đoạn huấn luyện.
 
-### 2.2. Giai đoạn 2: Huấn luyện mô hình tùy chỉnh
+### 2.2 Giai đoạn 2: Triển khai & cập nhật
+- Backend được triển khai trên Vercel (v-check-vercel.app) cho khả năng mở rộng tốt
+- Tự động triển khai (auto-deployment) khi có thay đổi từ nhánh main
+- Tích hợp Edge Functions để tối ưu hiệu suất và độ trễ
+- Hệ thống monitoring và logging tự động
+
+### 2.3. Giai đoạn 3: Huấn luyện mô hình tùy chỉnh
 - **Thu thập dữ liệu**: Dùng BeautifulSoup để crawl, xác nhận đường dẫn và làm sạch các URL đã lưu;
 - **Fine-tuning**: Tinh chỉnh mô hình **PhoBERT** để phân loại mức độ tin cậy của văn bản tiếng Việt.
 - **Triển khai & cập nhật**: Extension được cập nhật để gọi mô hình PhoBERT trước, Gemini sau (nếu cần).
 
-### 2.3. Tính năng chính
+### 2.4. Tính năng chính
 - **Phân tích thông minh**: Kiểm tra nội dung văn bản trực tiếp trên trang web.  
 - **AI Xác thực**: Sử dụng LLM (Gemini / PhoBERT) để phân tích và đánh giá độ tin cậy.  
 - **Gắn nhãn rõ ràng**: "Độ tin cậy cao" – "Cần kiểm chứng" – "Có khả năng sai lệch".  
