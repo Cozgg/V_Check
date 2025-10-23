@@ -5,8 +5,6 @@ from flask import Flask, request, jsonify
 from flask_cors import CORS
 from dotenv import load_dotenv
 
-from backend import api_key, db
-
 # Tải API key từ tệp .env
 load_dotenv()
 
@@ -15,6 +13,19 @@ app = Flask(__name__)
 # Cho phép extension (từ origin khác) gọi API này
 CORS(app)
 
+# === BẮT ĐẦU THAY ĐỔI ===
+
+# 1. Chuyển cấu hình app từ __init__.py sang đây
+app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv('POSTGRES_URL')
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+
+# 2. Import db VÀ api_key TỪ 'backend' SAU KHI tạo và cấu hình app
+from backend import api_key, db
+
+# 3. Khởi tạo db với app (đây là bước quan trọng nhất)
+db.init_app(app)
+
+# === KẾT THÚC THAY ĐỔI ===
 
 genai.configure(api_key=api_key)
 model = genai.GenerativeModel('gemini-2.5-flash')
