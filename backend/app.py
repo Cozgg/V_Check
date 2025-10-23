@@ -24,12 +24,10 @@ from backend import api_key, db
 db.init_app(app)
 
 # 4. Import model SAU KHI db được khởi tạo
-#    Điều này là cần thiết để hàm init_db() hoạt động
 from backend.model import FactCheck
 
 genai.configure(api_key=api_key)
-# Đảm bảo bạn đang dùng model được hỗ trợ, ví dụ 'gemini-1.5-flash'
-model = genai.GenerativeModel('gemini-2.5-flash')
+model = genai.GenerativeModel('gemini-1.5-flash')
 
 # --- ĐỊNH NGHĨA PROMPT CHO GEMINI ---
 FACT_CHECK_PROMPT = """
@@ -87,6 +85,21 @@ def check_fact_api():
             if 'label' not in result_data or 'summary' not in result_data:
                 raise ValueError("Thiếu key 'label' hoặc 'summary'")
 
+            # === BẮT ĐẦU MÃ LƯU VÀO DATABASE ===
+            # Mã này được thêm vào để lưu kết quả vào DB
+            try:
+                new_check = FactCheck(
+                    text_checked=text_to_check,
+                    label=result_data['label'],
+                    summary=result_data['summary']
+                )
+                db.session.add(new_check)
+                db.session.commit()
+            except Exception as e:
+                print(f"Lỗi khi lưu vào DB: {e}")
+                db.session.rollback() # Quan trọng: Hủy bỏ nếu có lỗi
+            # === KẾT THÚC MÃ LƯU VÀO DATABASE ===
+
             # Gửi lại dưới dạng JSON chuẩn cho frontend
             return jsonify(result_data), 200
 
@@ -108,6 +121,5 @@ def init_db():
     except Exception as e:
         return f"Error creating database: {str(e)}", 500
 
-# Dòng này chỉ để chạy local, Vercel sẽ không dùng
 if __name__ == '__main__':
     app.run(debug=True, port=5000)
