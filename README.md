@@ -161,7 +161,6 @@ Dự án này được phát hành dưới giấy phép **MIT**.
 - Thành viên: 2351010025 - Nguyễn Hữu Công, 2351010022 - Huỳnh Thế Cảnh, 2351010180 - Phạm Anh Quyền
 - Gmail : nguyenhuucong295@gmail.com
 - Thành viên trong nhóm: Xem thêm trong [contributors](https://github.com/Cozgg/V_Check/graphs/contributors)
-- Repository: https://github.com/Cozgg/V_Check
 
 ---
 
